@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense & Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-icon">💰</span>
+      <h1 class="app-title">Expense And Budget</h1>
+    </div>
+    <button id="themeToggle" class="icon-btn" aria-label="Toggle dark/light mode" title="Toggle theme">
+      <span id="themeIcon">🌙</span>
+    </button>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container">
+
+    <!-- Balance Card -->
+    <section class="balance-card" aria-label="Balance summary">
+      <p class="balance-label">Total Balance</p>
+      <h2 class="balance-amount" id="totalBalance">Rp 0</h2>
+      <div class="balance-row">
+        <div class="balance-stat income">
+          <span class="stat-icon">↑</span>
+          <div>
+            <p class="stat-label">Income</p>
+            <p class="stat-value" id="totalIncome">Rp 0</p>
+          </div>
+        </div>
+        <div class="divider-v"></div>
+        <div class="balance-stat expense">
+          <span class="stat-icon">↓</span>
+          <div>
+            <p class="stat-label">Expenses</p>
+            <p class="stat-value" id="totalExpense">Rp 0</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spending Limit Warning -->
+    <div id="limitWarning" class="limit-warning hidden" role="alert">
+      ⚠️ <span id="limitWarningText"></span>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="tab-nav" role="tablist">
+      <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
+      <button class="tab-btn" data-tab="transactions" role="tab" aria-selected="false">Transactions</button>
+      <button class="tab-btn" data-tab="monthly" role="tab" aria-selected="false">Monthly</button>
+      <button class="tab-btn" data-tab="settings" role="tab" aria-selected="false">Settings</button>
+    </nav>
+
+    <!-- ===== TAB: OVERVIEW ===== -->
+    <section class="tab-content active" id="tab-overview" role="tabpanel">
+
+      <!-- Add Transaction Form -->
+      <div class="card">
+        <h3 class="card-title">Add Transaction</h3>
+        <form id="transactionForm" novalidate>
+          <div class="form-group">
+            <label for="txDescription">Description</label>
+            <input type="text" id="txDescription" placeholder="e.g. Groceries, Salary…" maxlength="60" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="txAmount">Amount (Rp)</label>
+              <input type="number" id="txAmount" placeholder="0" min="1" required />
+            </div>
+            <div class="form-group">
+              <label for="txType">Type</label>
+              <select id="txType">
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="txCategory">Category</label>
+              <select id="txCategory"></select>
+            </div>
+            <div class="form-group">
+              <label for="txDate">Date</label>
+              <input type="date" id="txDate" required />
+            </div>
+          </div>
+          <p class="form-error hidden" id="formError"></p>
+          <button type="submit" class="btn-primary">+ Add Transaction</button>
+        </form>
+      </div>
+
+      <!-- Chart -->
+      <div class="card">
+        <h3 class="card-title">Spending by Category</h3>
+        <div class="chart-wrapper">
+          <canvas id="categoryChart" width="280" height="280" aria-label="Spending by category chart"></canvas>
+        </div>
+        <ul class="chart-legend" id="chartLegend"></ul>
+        <p class="empty-state hidden" id="chartEmpty">No expense data yet.</p>
+      </div>
+
+      <!-- Recent Transactions (last 5) -->
+      <div class="card">
+        <div class="card-header-row">
+          <h3 class="card-title">Recent Transactions</h3>
+          <button class="link-btn" data-tab-link="transactions">See all</button>
+        </div>
+        <ul class="tx-list" id="recentList">
+          <li class="empty-state">No transactions yet.</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- ===== TAB: TRANSACTIONS ===== -->
+    <section class="tab-content" id="tab-transactions" role="tabpanel">
+      <div class="card">
+        <div class="card-header-row">
+          <h3 class="card-title">All Transactions</h3>
+          <button class="btn-danger-sm" id="clearAllBtn">Clear All</button>
+        </div>
+
+        <!-- Sort & Filter -->
+        <div class="filter-row">
+          <select id="sortSelect">
+            <option value="date-desc">Newest first</option>
+            <option value="date-asc">Oldest first</option>
+            <option value="amount-desc">Highest amount</option>
+            <option value="amount-asc">Lowest amount</option>
+            <option value="category-asc">Category A–Z</option>
+          </select>
+          <select id="filterType">
+            <option value="all">All types</option>
+            <option value="income">Income only</option>
+            <option value="expense">Expense only</option>
+          </select>
+          <select id="filterCategory">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+
+        <ul class="tx-list" id="allTransactionsList">
+          <li class="empty-state">No transactions yet.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== TAB: MONTHLY ===== -->
+    <section class="tab-content" id="tab-monthly" role="tabpanel">
+      <div class="card">
+        <div class="card-header-row">
+          <h3 class="card-title">Monthly Summary</h3>
+          <div class="month-nav">
+            <button class="icon-btn" id="prevMonth" aria-label="Previous month">‹</button>
+            <span id="currentMonthLabel"></span>
+            <button class="icon-btn" id="nextMonth" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <div class="monthly-stats">
+          <div class="mstat income">
+            <p class="mstat-label">Income</p>
+            <p class="mstat-value" id="monthlyIncome">Rp 0</p>
+          </div>
+          <div class="mstat expense">
+            <p class="mstat-label">Expenses</p>
+            <p class="mstat-value" id="monthlyExpense">Rp 0</p>
+          </div>
+          <div class="mstat net">
+            <p class="mstat-label">Net</p>
+            <p class="mstat-value" id="monthlyNet">Rp 0</p>
+          </div>
+        </div>
+
+        <!-- Monthly bar chart -->
+        <div class="chart-wrapper" style="margin-top:1rem;">
+          <canvas id="monthlyChart" width="280" height="180" aria-label="Monthly category bar chart"></canvas>
+        </div>
+
+        <ul class="tx-list" id="monthlyList">
+          <li class="empty-state">No transactions this month.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== TAB: SETTINGS ===== -->
+    <section class="tab-content" id="tab-settings" role="tabpanel">
+
+      <!-- Spending Limit -->
+      <div class="card">
+        <h3 class="card-title">Spending Limit</h3>
+        <p class="card-desc">Set a monthly expense limit. You'll be warned when you exceed it.</p>
+        <div class="form-row">
+          <div class="form-group" style="flex:1">
+            <label for="limitInput">Monthly Limit (Rp)</label>
+            <input type="number" id="limitInput" placeholder="e.g. 5000000" min="0" />
+          </div>
+          <button class="btn-primary" id="saveLimitBtn" style="align-self:flex-end">Save</button>
+        </div>
+        <p class="form-success hidden" id="limitSaved">Limit saved ✓</p>
+      </div>
+
+      <!-- Custom Categories -->
+      <div class="card">
+        <h3 class="card-title">Manage Categories</h3>
+        <p class="card-desc">Add your own categories or remove ones you don't need.</p>
+        <ul class="category-list" id="categoryList"></ul>
+        <div class="form-row" style="margin-top:.75rem">
+          <div class="form-group" style="flex:1">
+            <label for="newCategoryInput">New Category</label>
+            <input type="text" id="newCategoryInput" placeholder="e.g. Hobbies" maxlength="30" />
+          </div>
+          <button class="btn-primary" id="addCategoryBtn" style="align-self:flex-end">Add</button>
+        </div>
+        <p class="form-error hidden" id="categoryError"></p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ===== DELETE CONFIRM MODAL ===== -->
+  <div class="modal-overlay hidden" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="modal">
+      <h3 id="deleteModalTitle">Delete Transaction?</h3>
+      <p>This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="cancelDelete">Cancel</button>
+        <button class="btn-danger" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/expense.js"></script>
+</body>
+</html>

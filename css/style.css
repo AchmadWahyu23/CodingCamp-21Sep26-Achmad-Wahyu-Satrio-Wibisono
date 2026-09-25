@@ -1,0 +1,709 @@
+/* =============================================
+   BudgetTrack – style.css
+   Mobile-first, single file, no frameworks
+   ============================================= */
+
+/* ── 1. CSS Custom Properties (Design Tokens) ── */
+:root {
+  /* Brand - Blue and White Theme */
+  --accent: #1e40af;
+  --accent-hover: #1e3a8a;
+  --income-color: #059669;
+  --expense-color: #dc2626;
+  --warning-color: #d97706;
+
+  /* Light theme surfaces */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #cbd5e1;
+
+  /* Light theme text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.12);
+
+  /* Radius & spacing */
+  --radius: 12px;
+  --radius-sm: 6px;
+  --gap: 1rem;
+
+  /* Transitions */
+  --transition: 0.2s ease;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #334155;
+  --border: #475569;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.4);
+}
+
+/* ── 2. Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100dvh;
+  transition: background var(--transition), color var(--transition);
+}
+
+ul { list-style: none; }
+button { cursor: pointer; font-family: inherit; }
+input, select, button { font-size: 1rem; }
+a { color: var(--accent); text-decoration: none; }
+
+/* ── 3. Layout ── */
+.container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 1rem var(--gap) 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+/* ── 4. Header ── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1.25rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.app-icon { font-size: 1.4rem; }
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── 5. Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: .85rem;
+}
+
+.card-desc {
+  font-size: .85rem;
+  color: var(--text-secondary);
+  margin-bottom: .85rem;
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .85rem;
+}
+
+.card-header-row .card-title { margin-bottom: 0; }
+
+/* ── 6. Balance Card ── */
+.balance-card {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.25rem 1.25rem;
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.balance-label {
+  font-size: .8rem;
+  font-weight: 500;
+  opacity: .85;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.balance-amount {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: .3rem 0 1.25rem;
+  word-break: break-all;
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.balance-stat {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex: 1;
+}
+
+.stat-icon {
+  font-size: 1.2rem;
+  font-weight: 700;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  flex-shrink: 0;
+}
+
+.stat-label {
+  font-size: .72rem;
+  opacity: .8;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.stat-value {
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+.divider-v {
+  width: 1px;
+  height: 2.5rem;
+  background: rgba(255,255,255,.3);
+  flex-shrink: 0;
+}
+
+/* ── 7. Spending Limit Warning ── */
+.limit-warning {
+  background: #fef3c7;
+  border: 1.5px solid var(--warning-color);
+  color: #92400e;
+  border-radius: var(--radius-sm);
+  padding: .7rem 1rem;
+  font-size: .88rem;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .limit-warning {
+  background: #451a03;
+  color: #fcd34d;
+  border-color: #b45309;
+}
+
+/* ── 8. Tab Navigation ── */
+.tab-nav {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .25rem;
+  gap: .25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: .5rem .25rem;
+  border: none;
+  background: transparent;
+  border-radius: calc(var(--radius) - 4px);
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── 9. Tab Panels ── */
+.tab-content {
+  display: none;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.tab-content.active {
+  display: flex;
+}
+
+/* ── 10. Forms ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.form-row {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+.form-row .form-group { flex: 1; min-width: 120px; }
+
+label {
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: .6rem .8rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  transition: border-color var(--transition), background var(--transition);
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+input::placeholder { color: var(--text-muted); }
+
+.form-group { margin-bottom: .6rem; }
+
+.form-error {
+  font-size: .82rem;
+  color: var(--expense-color);
+  margin-top: .2rem;
+}
+
+.form-success {
+  font-size: .82rem;
+  color: var(--income-color);
+  margin-top: .4rem;
+  font-weight: 500;
+}
+
+/* ── 11. Buttons ── */
+.btn-primary {
+  width: 100%;
+  padding: .7rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: .95rem;
+  margin-top: .4rem;
+  transition: background var(--transition), transform .1s;
+}
+
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:active { transform: scale(.98); }
+
+.btn-secondary {
+  padding: .55rem 1.1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: background var(--transition);
+}
+
+.btn-secondary:hover { background: var(--surface-2); }
+
+.btn-danger {
+  padding: .55rem 1.1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--expense-color);
+  color: #fff;
+  font-weight: 600;
+  transition: opacity var(--transition);
+}
+
+.btn-danger:hover { opacity: .85; }
+
+.btn-danger-sm {
+  padding: .35rem .7rem;
+  border: 1.5px solid var(--expense-color);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--expense-color);
+  font-size: .78rem;
+  font-weight: 600;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn-danger-sm:hover {
+  background: var(--expense-color);
+  color: #fff;
+}
+
+.icon-btn {
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.icon-btn:hover { background: var(--surface-2); border-color: var(--accent); }
+
+.link-btn {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: .82rem;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.link-btn:hover { opacity: .75; }
+
+/* ── 12. Transaction List ── */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .65rem .75rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: background var(--transition);
+  position: relative;
+}
+
+.tx-item:hover { background: var(--bg); }
+
+/* Highlight over-limit transactions */
+.tx-item.over-limit {
+  border-color: var(--warning-color);
+  background: #fffbeb;
+}
+
+[data-theme="dark"] .tx-item.over-limit {
+  background: #1c1505;
+  border-color: #b45309;
+}
+
+.tx-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.tx-icon.income { background: #dcfce7; }
+.tx-icon.expense { background: #fee2e2; }
+
+[data-theme="dark"] .tx-icon.income { background: #14532d; }
+[data-theme="dark"] .tx-icon.expense { background: #7f1d1d; }
+
+.tx-info { flex: 1; min-width: 0; }
+
+.tx-desc {
+  font-size: .88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tx-meta {
+  font-size: .75rem;
+  color: var(--text-muted);
+  margin-top: .1rem;
+}
+
+.tx-amount {
+  font-size: .95rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tx-amount.income { color: var(--income-color); }
+.tx-amount.expense { color: var(--expense-color); }
+
+.tx-delete {
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: .9rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background var(--transition), color var(--transition);
+}
+
+.tx-delete:hover { background: #fee2e2; color: var(--expense-color); }
+
+[data-theme="dark"] .tx-delete:hover { background: #7f1d1d; }
+
+/* ── 13. Filter / Sort Row ── */
+.filter-row {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: .75rem;
+}
+
+.filter-row select {
+  flex: 1;
+  min-width: 100px;
+  font-size: .8rem;
+  padding: .45rem .6rem;
+}
+
+/* ── 14. Donut Chart ── */
+.chart-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: .5rem 0;
+}
+
+.chart-wrapper canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .75rem;
+  justify-content: center;
+  margin-top: .75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .78rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: .7rem;
+  height: .7rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── 15. Monthly Stats ── */
+.monthly-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
+  margin: .5rem 0;
+}
+
+.mstat {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: .75rem .5rem;
+  text-align: center;
+}
+
+.mstat-label {
+  font-size: .72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .3rem;
+}
+
+.mstat-value {
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.mstat.income .mstat-value { color: var(--income-color); }
+.mstat.expense .mstat-value { color: var(--expense-color); }
+.mstat.net .mstat-value { color: var(--accent); }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── 16. Category Manager ── */
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .45rem .65rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+}
+
+.category-item .cat-emoji { margin-right: .4rem; }
+
+.cat-delete {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: .85rem;
+  padding: .15rem .3rem;
+  border-radius: 4px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.cat-delete:hover { background: #fee2e2; color: var(--expense-color); }
+[data-theme="dark"] .cat-delete:hover { background: #7f1d1d; }
+
+/* ── 17. Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+  backdrop-filter: blur(3px);
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 340px;
+  width: 100%;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.modal h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+.modal p {
+  font-size: .88rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: .75rem;
+  justify-content: flex-end;
+}
+
+/* ── 18. Utility ── */
+.hidden { display: none !important; }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .85rem;
+  padding: 1.25rem 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+/* ── 19. Responsive tweaks for larger screens ── */
+@media (min-width: 480px) {
+  .balance-amount { font-size: 2.4rem; }
+  .tab-btn { font-size: .85rem; }
+}
+
+@media (min-width: 600px) {
+  .container { padding-top: 1.5rem; }
+  .balance-card { padding: 2rem 1.75rem 1.5rem; }
+}
